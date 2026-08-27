@@ -1,190 +1,293 @@
 import { Link } from "react-router-dom"
-import { motion } from "framer-motion"
-import { ShieldCheck, Sparkles, Trophy, HeartPulse, Star, ArrowRight } from "lucide-react"
+import {
+  ArrowRight,
+  CalendarDays,
+  ChevronDown,
+  Heart,
+  Phone,
+  Star,
+  Target,
+  Trophy,
+  Users,
+  Zap,
+} from "lucide-react"
 import { SEO } from "@/components/SEO"
 import { LocalBusinessSchema } from "@/components/LocalBusinessSchema"
 import { Button } from "@/components/ui/button"
 import { ClassCard } from "@/components/ClassCard"
 import { TestimonialCard } from "@/components/TestimonialCard"
+import { SectionHeading } from "@/components/SectionHeading"
 import { PageError, PageLoading } from "@/components/PageState"
 import { useAsync } from "@/lib/hooks"
 import { getClasses, getTestimonials } from "@/lib/data"
 
+const HERO_IMAGE =
+  "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695f7c8c8199f9e9838f4724/4b3e4e883_ChatGPTImageJan8202607_14_30PM.png"
+
 const features = [
   {
+    icon: Users,
+    title: "Expert Coaches",
+    description: "Fully qualified, DBS certified coaches with 10+ years experience",
+  },
+  {
     icon: Trophy,
-    title: "State-of-the-Art Facility",
-    description: "Harrow's largest dedicated martial arts academy with full equipment.",
+    title: "All Ages & Levels",
+    description: "From toddlers to adults, beginners to advanced athletes",
   },
   {
-    icon: ShieldCheck,
-    title: "Safe Training Environment",
-    description: "All our coaches are background checked and certified to work with all age groups.",
+    icon: Zap,
+    title: "Specialist Facility",
+    description: "Largest martial arts academy in Harrow with extensive training areas",
   },
   {
-    icon: Sparkles,
-    title: "Excellence in Technique",
-    description: "Our coaching team has over a decade of proven martial arts experience.",
+    icon: Heart,
+    title: "Personal Growth",
+    description: "Build confidence, discipline, and mental resilience",
   },
   {
-    icon: HeartPulse,
-    title: "DBS Certified Coaches",
-    description: "Every coach maintains current first aid and CPR certifications.",
+    icon: Star,
+    title: "Over 450 5-Star Reviews",
+    description: "Trusted by hundreds of satisfied members on Google",
   },
+  {
+    icon: Target,
+    title: "Results Driven",
+    description: "Proven methods to help you achieve your goals",
+  },
+]
+
+const stats = [
+  { value: "500+", label: "Active Members" },
+  { value: "5+", label: "Experienced Coaches" },
+  { value: "15+", label: "Years Experience" },
+  { value: "35+", label: "Classes Weekly" },
 ]
 
 export function Home() {
   const { data: classes, loading: classesLoading, error: classesError } = useAsync(getClasses)
-  const { data: testimonials, loading: testimonialsLoading, error: testimonialsError } = useAsync(getTestimonials)
+  const {
+    data: testimonials,
+    loading: testimonialsLoading,
+    error: testimonialsError,
+  } = useAsync(getTestimonials)
 
   return (
     <>
       <SEO
         title="Revival MMA Hub"
-        description="Your central hub for everything Revival MMA. Track classes, view schedules, and connect with the community."
+        description="Harrow's largest dedicated martial arts academy. Boxing, kickboxing, BJJ and MMA for all ages. Book your free trial session today."
       />
       <LocalBusinessSchema />
 
-      <section
-        className="relative overflow-hidden bg-black bg-cover bg-center text-white"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.55)), url('https://i.postimg.cc/N0KYy9CC/580056879-18072974534339951-8645562625290511311-n.jpg')",
-        }}
-      >
-        <div className="relative mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-28 sm:px-6 sm:py-36">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-sm font-bold uppercase tracking-[0.2em] text-primary-foreground/80"
-          >
-            Rise Above Excellence
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="max-w-2xl font-serif text-4xl font-bold leading-tight sm:text-6xl"
-          >
-            Transform Your Body & Mind
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="max-w-xl text-lg text-white/80"
-          >
-            Premier martial arts and fitness training. Learn from specialist coaches in the
-            heart of Harrow. All ages, all levels.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap gap-4 pt-2"
-          >
-            <Button asChild size="lg" className="bg-white text-black hover:bg-white/90">
-              <Link to="/contact">Book Your Free Trial Session Today</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-white/40 bg-transparent text-white hover:bg-white hover:text-black">
-              <Link to="/classes">View All Classes</Link>
-            </Button>
-          </motion.div>
+      {/* ---------------------------------------------------------------- Hero */}
+      <section className="relative isolate overflow-hidden bg-surface">
+        <img
+          src={HERO_IMAGE}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 -z-10 h-full w-full object-cover object-center"
+        />
+        {/* Scrim keeps the headline readable over a light photo, in both themes */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-white via-white/85 to-white/30 dark:from-gray-950 dark:via-gray-950/90 dark:to-gray-950/40"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-background to-transparent"
+        />
+
+        <div className="mx-auto flex min-h-[clamp(560px,82vh,780px)] max-w-7xl flex-col justify-center px-5 py-24 sm:px-8">
+          <div className="max-w-2xl">
+            <span className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-gold-dark dark:text-gold">
+              Rising Above Excellence
+            </span>
+
+            <h1
+              className="animate-fade-up mt-7 font-serif text-[clamp(2.75rem,7vw,4.75rem)] font-bold leading-[1.03]"
+              style={{ animationDelay: "80ms" }}
+            >
+              Transform Your
+              <br />
+              Body &amp; <span className="text-gold-gradient">Mind</span>
+            </h1>
+
+            <p
+              className="animate-fade-up mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground"
+              style={{ animationDelay: "160ms" }}
+            >
+              Premier martial arts and fitness training. Learn from specialist coaches in the
+              heart of Harrow. All ages, all levels.
+            </p>
+
+            <div
+              className="animate-fade-up mt-9 flex flex-wrap gap-3"
+              style={{ animationDelay: "240ms" }}
+            >
+              <Button asChild size="lg">
+                <Link to="/contact">
+                  <CalendarDays className="h-4 w-4" />
+                  Get Started Today
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <a href="tel:+447540467320">
+                  <Phone className="h-4 w-4" />
+                  Call Now
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <a
+          href="#why"
+          className="absolute inset-x-0 bottom-7 mx-auto flex w-fit flex-col items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-gold-dark dark:hover:text-gold"
+        >
+          Scroll to explore
+          <ChevronDown className="animate-bob h-4 w-4" />
+        </a>
+      </section>
+
+      {/* ------------------------------------------------------ Why Choose Revival */}
+      <section id="why" className="scroll-mt-24 bg-surface py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <SectionHeading
+            title="Why Choose Revival?"
+            subtitle="Everything you need to transform your life"
+          />
+
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map(({ icon: Icon, title, description }) => (
+              <div
+                key={title}
+                className="card-lift group rounded-xl border border-border bg-card p-7 shadow-sm"
+              >
+                <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-gold/10 text-gold-dark transition-colors group-hover:bg-gold/20 dark:text-gold">
+                  <Icon className="h-6 w-6" strokeWidth={1.75} />
+                </span>
+                <h3 className="mt-5 font-serif text-xl font-bold">{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="border-b border-border bg-muted/30">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 sm:px-6 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map(({ icon: Icon, title, description }) => (
-            <div key={title} className="flex flex-col gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Icon className="h-6 w-6" />
-              </div>
-              <h3 className="font-serif text-lg font-semibold">{title}</h3>
-              <p className="text-sm text-muted-foreground">{description}</p>
+      {/* ------------------------------------------------------------------ Stats */}
+      <section className="border-y border-border bg-background py-16">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-5 sm:px-8 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div key={s.label} className="text-center">
+              <p className="font-sans text-[clamp(2.25rem,5vw,3.25rem)] font-extrabold leading-none text-gold-gradient">
+                {s.value}
+              </p>
+              <p className="mt-2.5 text-sm font-medium text-muted-foreground">{s.label}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <div className="mb-10 flex flex-col gap-2 text-center">
-          <h2 className="font-serif text-3xl font-bold sm:text-4xl">Our Classes</h2>
-          <p className="text-muted-foreground">
-            Choose from our diverse range of training programs. Find the perfect class for your
-            goals and experience level — from toddlers to adults, beginners to advanced athletes.
-          </p>
-        </div>
+      {/* ---------------------------------------------------------------- Classes */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <SectionHeading
+            title="Our Classes"
+            subtitle="Choose from our diverse range of training programs"
+          />
 
-        {classesLoading && <PageLoading />}
-        {classesError && <PageError message={classesError} />}
-        {classes && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {classes.slice(0, 6).map((c) => (
-              <ClassCard key={c.id} gymClass={c} />
-            ))}
+          {classesLoading && <PageLoading />}
+          {classesError && <PageError message={classesError} />}
+          {classes && (
+            <div className="mt-14 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+              {classes.slice(0, 6).map((c) => (
+                <ClassCard key={c.id} gymClass={c} />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-12 flex justify-center">
+            <Button asChild size="lg" variant="outline">
+              <Link to="/classes">
+                View All Classes
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
           </div>
-        )}
-
-        <div className="mt-10 flex justify-center">
-          <Button asChild size="lg" variant="outline">
-            <Link to="/classes" className="gap-2">
-              View All Classes <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
         </div>
       </section>
 
-      <section className="border-y border-border bg-muted/30">
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-          <div className="mb-10 flex flex-col items-center gap-3 text-center">
-            <div className="flex items-center gap-1 text-amber-500">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-5 w-5 fill-current" />
-              ))}
-            </div>
-            <h2 className="font-serif text-3xl font-bold sm:text-4xl">What Our Members Say</h2>
-            <p className="text-muted-foreground">Real Google Reviews from our community</p>
-            <p className="text-sm font-semibold">
-              Over 450 5-Star Reviews — Trusted by hundreds of satisfied members on Google
-            </p>
-          </div>
+      {/* ----------------------------------------------------------- Testimonials */}
+      <section className="bg-surface py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <SectionHeading
+            eyebrow="Over 450 5-Star Reviews"
+            title="What Our Members Say"
+            subtitle="Real Google Reviews from our community"
+          />
 
           {testimonialsLoading && <PageLoading />}
           {testimonialsError && <PageError message={testimonialsError} />}
           {testimonials && (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {testimonials.slice(0, 6).map((t) => (
                 <TestimonialCard key={t.id} testimonial={t} />
               ))}
             </div>
           )}
 
-          <div className="mt-10 flex justify-center">
+          <div className="mt-12 flex justify-center">
             <Button asChild variant="link">
               <a
                 href="https://www.google.com/search?q=Revival+MMA+Harrow+reviews"
                 target="_blank"
                 rel="noreferrer"
               >
-                Read More Reviews on Google →
+                Read More Reviews on Google
+                <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
           </div>
         </div>
       </section>
 
-      <section className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6">
-          <h2 className="font-serif text-3xl font-bold sm:text-4xl">Ready to Start Your Journey?</h2>
-          <p className="max-w-xl text-primary-foreground/80">
+      {/* -------------------------------------------------------------------- CTA */}
+      <section className="relative overflow-hidden bg-gray-900 py-24 dark:bg-gray-950">
+        <div
+          aria-hidden
+          className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-gold/20 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-gold/10 blur-3xl"
+        />
+
+        <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-7 px-5 text-center sm:px-8">
+          <h2 className="font-serif text-[clamp(2rem,5vw,3rem)] font-bold leading-tight text-white">
+            Ready to Start Your Journey?
+          </h2>
+          <p className="max-w-xl text-lg leading-relaxed text-gray-300">
             Join hundreds of members who are already achieving their goals. Start your martial
             arts journey today.
           </p>
-          <Button asChild size="lg" variant="outline" className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-            <Link to="/contact">Book Your Free Trial</Link>
-          </Button>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg">
+              <Link to="/contact">
+                <CalendarDays className="h-4 w-4" />
+                Book Your Free Trial
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/25 bg-transparent text-white hover:border-gold hover:bg-white/5 hover:text-gold"
+            >
+              <Link to="/timetable">View Timetable</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </>
