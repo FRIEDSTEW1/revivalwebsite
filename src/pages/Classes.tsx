@@ -75,31 +75,34 @@ export function Classes() {
 
         {loading && <PageLoading />}
         {error && <PageError message={error} />}
-        {classes && filtered.length === 0 && (
-          <PageEmpty message="No classes in this category yet." />
-        )}
-        {classes && filtered.length > 0 && (
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            <AnimatePresence mode="popLayout" initial={false}>
-              {filtered.map((c, i) => (
-                <motion.div
-                  key={c.id}
-                  layout={!reduce}
-                  initial={reduce ? false : { opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={reduce ? undefined : { opacity: 0, scale: 0.96 }}
-                  transition={{
-                    duration: 0.38,
-                    delay: reduce ? 0 : Math.min(i, 6) * 0.05,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                >
-                  <ClassCard gymClass={c} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
+
+        {/*
+          One crossfade for the whole result set on filter change, rather
+          than each card animating its own position/opacity independently —
+          per-card `layout` reflow plus staggered delays restarting on every
+          click was the source of the timetable's filter-switch glitchiness,
+          so the same simpler pattern is used here.
+        */}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={filter}
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduce ? undefined : { opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+          >
+            {classes && filtered.length === 0 && (
+              <PageEmpty message="No classes in this category yet." />
+            )}
+            {classes && filtered.length > 0 && (
+              <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((c) => (
+                  <ClassCard key={c.id} gymClass={c} />
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </>
   )
