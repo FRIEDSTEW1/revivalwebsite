@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useInView, useReducedMotion } from "framer-motion"
 
 interface CountUpProps {
@@ -13,14 +13,22 @@ export function CountUp({ value, className }: CountUpProps) {
   const inView = useInView(ref, { once: true, margin: "0px 0px -60px 0px" })
   const reduce = useReducedMotion()
 
-  const match = value.match(/^(\d+)(.*)$/)
-  const target = match ? parseInt(match[1], 10) : 0
-  const suffix = match ? match[2] : value
+  // Memoized on `value` alone — String.match() returns a new array every
+  // call, and having that array in the effect's deps below was restarting
+  // the animation (and cancelling the in-flight frame) on every tick.
+  const { target, suffix, hasDigits } = useMemo(() => {
+    const match = value.match(/^(\d+)(.*)$/)
+    return {
+      target: match ? parseInt(match[1], 10) : 0,
+      suffix: match ? match[2] : value,
+      hasDigits: Boolean(match),
+    }
+  }, [value])
 
-  const [display, setDisplay] = useState(reduce || !match ? target : 0)
+  const [display, setDisplay] = useState(reduce || !hasDigits ? target : 0)
 
   useEffect(() => {
-    if (!inView || reduce || !match) return
+    if (!inView || reduce || !hasDigits) return
 
     const duration = 1400
     const start = performance.now()
@@ -36,11 +44,11 @@ export function CountUp({ value, className }: CountUpProps) {
 
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
-  }, [inView, reduce, match, target])
+  }, [inView, reduce, hasDigits, target])
 
   return (
     <span ref={ref} className={className}>
-      {match ? display : ""}
+      {hasDigits ? display : ""}
       {suffix}
     </span>
   )

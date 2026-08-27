@@ -2,7 +2,6 @@ import { useMemo, useState } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { CalendarDays, Clock } from "lucide-react"
 import type { ClassCategory, TimetableEntry, Weekday } from "@/lib/types"
-import { Reveal } from "@/components/motion/Reveal"
 import { cn } from "@/lib/utils"
 
 const DAYS: Weekday[] = [
@@ -95,43 +94,48 @@ export function TimetableGrid({ entries }: { entries: TimetableEntry[] }) {
         </div>
       </div>
 
-      {byDay.length === 0 ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">
-          No classes match this filter.
-        </p>
-      ) : (
-        <div className="flex flex-col gap-8">
-          {byDay.map(({ day, entries: dayEntries }, dayIndex) => (
-            <Reveal key={day} as="section" index={Math.min(dayIndex, 3)}>
-              <div className="overflow-hidden rounded-xl border border-border bg-surface">
-                <header className="flex items-center justify-between gap-3 px-6 py-5">
-                  <h3 className="flex items-center gap-2.5 font-serif text-xl font-bold">
-                    <CalendarDays
-                      className="h-5 w-5 text-gold-dark dark:text-gold"
-                      strokeWidth={2}
-                    />
-                    {day}
-                  </h3>
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {dayEntries.length} {dayEntries.length === 1 ? "class" : "classes"}
-                  </span>
-                </header>
+      {/*
+        Switching filters swaps out whole day panels, not individual rows —
+        so this crossfades the entire result set as one block instead of
+        choreographing each card's own entrance/exit. Independent per-card
+        layout animations here fought each other on every click (panels
+        mounting fresh, cards reflowing, staggers restarting), which read as
+        glitchy rather than smooth.
+      */}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={filter}
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={reduce ? undefined : { opacity: 0 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
+        >
+          {byDay.length === 0 ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              No classes match this filter.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-8">
+              {byDay.map(({ day, entries: dayEntries }) => (
+                <div key={day} className="overflow-hidden rounded-xl border border-border bg-surface">
+                  <header className="flex items-center justify-between gap-3 px-6 py-5">
+                    <h3 className="flex items-center gap-2.5 font-serif text-xl font-bold">
+                      <CalendarDays
+                        className="h-5 w-5 text-gold-dark dark:text-gold"
+                        strokeWidth={2}
+                      />
+                      {day}
+                    </h3>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {dayEntries.length} {dayEntries.length === 1 ? "class" : "classes"}
+                    </span>
+                  </header>
 
-                <ul className="flex flex-col gap-3 px-4 pb-5 sm:px-6">
-                  <AnimatePresence mode="popLayout" initial={false}>
-                    {dayEntries.map((entry, i) => (
-                      <motion.li
+                  <ul className="flex flex-col gap-3 px-4 pb-5 sm:px-6">
+                    {dayEntries.map((entry) => (
+                      <li
                         key={entry.id}
-                        layout={!reduce}
-                        initial={reduce ? false : { opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={reduce ? undefined : { opacity: 0, scale: 0.97 }}
-                        transition={{
-                          duration: 0.3,
-                          delay: reduce ? 0 : Math.min(i, 6) * 0.035,
-                          ease: [0.16, 1, 0.3, 1],
-                        }}
-                        className="group rounded-lg border border-border bg-card px-5 py-4 transition-all duration-200 hover:border-gold/60 hover:shadow-sm"
+                        className="group rounded-lg border border-border bg-card px-5 py-4 transition-colors duration-200 hover:border-gold/60 hover:shadow-sm"
                       >
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                           <span className="font-serif text-[15px] font-bold">
@@ -150,15 +154,15 @@ export function TimetableGrid({ entries }: { entries: TimetableEntry[] }) {
                           <Clock className="h-3.5 w-3.5 text-gold-dark dark:text-gold" />
                           {entry.time}
                         </p>
-                      </motion.li>
+                      </li>
                     ))}
-                  </AnimatePresence>
-                </ul>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      )}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }
