@@ -1,6 +1,7 @@
 import { SEO } from "@/components/SEO"
 import { PageHeader } from "@/components/PageHeader"
 import { TeamCard } from "@/components/TeamCard"
+import { Reveal } from "@/components/motion/Reveal"
 import { PageEmpty, PageError, PageLoading } from "@/components/PageState"
 import { useAsync } from "@/lib/hooks"
 import { getTeam } from "@/lib/data"
@@ -28,8 +29,10 @@ export function Team() {
         )}
         {team && team.length > 0 && (
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
-            {team.map((m) => (
-              <TeamCard key={m.id} member={m} />
+            {team.map((m, i) => (
+              <Reveal key={m.id} index={i}>
+                <TeamCard member={m} />
+              </Reveal>
             ))}
           </div>
         )}
