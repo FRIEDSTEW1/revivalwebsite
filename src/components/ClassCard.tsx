@@ -1,33 +1,36 @@
+import { Check } from "lucide-react"
 import type { GymClass } from "@/lib/types"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 
 export function ClassCard({ gymClass }: { gymClass: GymClass }) {
   return (
-    <Card className="flex flex-col overflow-hidden">
-      <img
-        src={gymClass.image}
-        alt={gymClass.name}
-        loading="lazy"
-        className="h-48 w-full object-cover"
-      />
-      <CardHeader>
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle>{gymClass.name}</CardTitle>
-          <Badge variant="secondary">{gymClass.ageRange}</Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="flex flex-1 flex-col gap-4">
-        <p className="text-sm text-muted-foreground">{gymClass.description}</p>
-        <ul className="mt-auto grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
+    <article className="card-lift group flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+        <img
+          src={gymClass.image?.trim()}
+          alt={gymClass.name}
+          loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+        />
+        <span className="absolute right-3 top-3 rounded-full bg-gold px-3 py-1 text-xs font-bold text-gray-900 shadow-sm">
+          {gymClass.ageRange}
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-6">
+        <h3 className="font-serif text-xl font-bold">{gymClass.name}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          {gymClass.description}
+        </p>
+
+        <ul className="mt-5 grid gap-2 border-t border-border pt-5">
           {gymClass.benefits.map((b) => (
-            <li key={b} className="flex items-center gap-1.5">
-              <span className="h-1 w-1 shrink-0 rounded-full bg-primary" />
+            <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-gold-dark dark:text-gold" strokeWidth={2.5} />
               {b}
             </li>
           ))}
         </ul>
-      </CardContent>
-    </Card>
+      </div>
+    </article>
   )
 }

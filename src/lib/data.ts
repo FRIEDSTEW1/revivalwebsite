@@ -16,55 +16,71 @@ import type {
   ContactSubmission,
 } from "./types"
 
-// Read paths: fall back to the real recovered content when Supabase isn't
-// configured yet, so the site is fully browsable out of the box. Once
-// VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are set and the schema+seed
-// have been run (see supabase/), everything reads/writes from Postgres.
+// Reads always resolve to something renderable. Supabase is the source of
+// truth once VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are set and the
+// schema+seed have been run (see supabase/README.md). Until then — or if the
+// network is down, the tables don't exist yet, or the request times out — we
+// serve the content bundled in seedData.ts rather than showing a visitor a
+// spinner or an error. A public gym site should never render empty.
 
-export async function getClasses(): Promise<GymClass[]> {
-  if (!supabase) return classesSeed
-  const { data, error } = await supabase.from("classes").select("*").order("name")
-  if (error) throw error
-  return data as GymClass[]
+const TIMEOUT_MS = 8000
+
+async function readOrFallback<T>(
+  fallback: T,
+  query: () => PromiseLike<{ data: unknown; error: unknown }>
+): Promise<T> {
+  if (!supabase) return fallback
+
+  try {
+    const result = await Promise.race([
+      Promise.resolve(query()),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Supabase request timed out")), TIMEOUT_MS)
+      ),
+    ])
+
+    if (result.error) throw result.error
+    if (result.data == null || (Array.isArray(result.data) && result.data.length === 0)) {
+      return fallback
+    }
+    return result.data as T
+  } catch (err) {
+    if (import.meta.env.DEV) {
+      console.warn("[data] Supabase read failed, serving bundled content:", err)
+    }
+    return fallback
+  }
 }
 
-export async function getTeam(): Promise<TeamMember[]> {
-  if (!supabase) return teamSeed
-  const { data, error } = await supabase.from("team_members").select("*").order("experience", { ascending: false })
-  if (error) throw error
-  return data as TeamMember[]
+export function getClasses(): Promise<GymClass[]> {
+  return readOrFallback(classesSeed, () => supabase!.from("classes").select("*").order("name"))
 }
 
-export async function getTestimonials(): Promise<Testimonial[]> {
-  if (!supabase) return testimonialsSeed
-  const { data, error } = await supabase.from("testimonials").select("*")
-  if (error) throw error
-  return data as Testimonial[]
+export function getTeam(): Promise<TeamMember[]> {
+  return readOrFallback(teamSeed, () =>
+    supabase!.from("team_members").select("*").order("experience", { ascending: false })
+  )
 }
 
-export async function getTimetable(): Promise<TimetableEntry[]> {
-  if (!supabase) return timetableSeed
-  const { data, error } = await supabase.from("timetable_entries").select("*")
-  if (error) throw error
-  return data as TimetableEntry[]
+export function getTestimonials(): Promise<Testimonial[]> {
+  return readOrFallback(testimonialsSeed, () => supabase!.from("testimonials").select("*"))
 }
 
-export async function getFAQs(): Promise<FAQItem[]> {
-  if (!supabase) return [...faqSeed].sort((a, b) => a.order - b.order)
-  const { data, error } = await supabase.from("faq_items").select("*").order("order")
-  if (error) throw error
-  return data as FAQItem[]
+export function getTimetable(): Promise<TimetableEntry[]> {
+  return readOrFallback(timetableSeed, () => supabase!.from("timetable_entries").select("*"))
+}
+
+export function getFAQs(): Promise<FAQItem[]> {
+  const sortedSeed = [...faqSeed].sort((a, b) => a.order - b.order)
+  return readOrFallback(sortedSeed, () => supabase!.from("faq_items").select("*").order("order"))
 }
 
 export async function getPageContent(page: string): Promise<string | null> {
-  if (!supabase) return pageContentSeed.find((p) => p.page === page)?.content ?? null
-  const { data, error } = await supabase
-    .from("page_content")
-    .select("content")
-    .eq("page", page)
-    .maybeSingle()
-  if (error) throw error
-  return data?.content ?? null
+  const seed = pageContentSeed.find((p) => p.page === page)?.content ?? null
+  const row = await readOrFallback<{ content: string } | null>(null, () =>
+    supabase!.from("page_content").select("content").eq("page", page).maybeSingle()
+  )
+  return row?.content ?? seed
 }
 
 export async function submitContact(submission: ContactSubmission): Promise<void> {

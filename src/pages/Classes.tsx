@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react"
 import { SEO } from "@/components/SEO"
+import { PageHeader } from "@/components/PageHeader"
 import { ClassCard } from "@/components/ClassCard"
 import { PageEmpty, PageError, PageLoading } from "@/components/PageState"
-import { Button } from "@/components/ui/button"
 import { useAsync } from "@/lib/hooks"
 import { getClasses } from "@/lib/data"
 import type { ClassCategory } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 const FILTERS: { value: ClassCategory | "all"; label: string }[] = [
   { value: "all", label: "All Ages" },
@@ -24,42 +25,50 @@ export function Classes() {
   }, [classes, filter])
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <>
       <SEO
         title="Classes"
         description="Choose from our diverse range of training programs: Boxing, Kickboxing, BJJ, MMA and Personal Training. From toddlers to adults, beginners to advanced athletes."
       />
+      <PageHeader
+        eyebrow="Training Programs"
+        title="Our Classes"
+        subtitle="Find the perfect class for your goals and experience level."
+      />
 
-      <div className="mb-10 text-center">
-        <h1 className="font-serif text-4xl font-bold sm:text-5xl">Our Classes</h1>
-        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-          Find the perfect class for your goals and experience level.
-        </p>
-      </div>
-
-      <div className="mb-8 flex flex-wrap justify-center gap-2">
-        {FILTERS.map((f) => (
-          <Button
-            key={f.value}
-            size="sm"
-            variant={filter === f.value ? "default" : "outline"}
-            onClick={() => setFilter(f.value)}
-          >
-            {f.label}
-          </Button>
-        ))}
-      </div>
-
-      {loading && <PageLoading />}
-      {error && <PageError message={error} />}
-      {classes && filtered.length === 0 && <PageEmpty message="No classes in this category yet." />}
-      {classes && filtered.length > 0 && (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((c) => (
-            <ClassCard key={c.id} gymClass={c} />
+      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
+        <div className="mb-12 flex flex-wrap justify-center gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => setFilter(f.value)}
+              aria-pressed={filter === f.value}
+              className={cn(
+                "rounded-full border px-5 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                filter === f.value
+                  ? "border-transparent bg-gold-gradient text-gray-900 shadow-sm"
+                  : "border-border bg-background text-muted-foreground hover:border-gold/60 hover:text-foreground"
+              )}
+            >
+              {f.label}
+            </button>
           ))}
         </div>
-      )}
-    </div>
+
+        {loading && <PageLoading />}
+        {error && <PageError message={error} />}
+        {classes && filtered.length === 0 && (
+          <PageEmpty message="No classes in this category yet." />
+        )}
+        {classes && filtered.length > 0 && (
+          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((c) => (
+              <ClassCard key={c.id} gymClass={c} />
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   )
 }
