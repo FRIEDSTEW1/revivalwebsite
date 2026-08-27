@@ -2,6 +2,7 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react"
 import { SEO } from "@/components/SEO"
 import { PageHeader } from "@/components/PageHeader"
 import { ContactForm } from "@/components/ContactForm"
+import { Reveal } from "@/components/motion/Reveal"
 
 const details = [
   {
@@ -46,9 +47,11 @@ export function Contact() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr]">
           <div className="flex flex-col gap-8">
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              {details.map(({ icon: Icon, label, value, href }) => (
-                <li
+              {details.map(({ icon: Icon, label, value, href }, i) => (
+                <Reveal
+                  as="li"
                   key={label}
+                  index={i}
                   className="flex items-start gap-4 rounded-xl border border-border bg-card p-5 shadow-sm"
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gold/10 text-gold-dark dark:text-gold">
@@ -69,7 +72,7 @@ export function Contact() {
                       <span className="mt-1 block break-words font-semibold">{value}</span>
                     )}
                   </span>
-                </li>
+                </Reveal>
               ))}
             </ul>
 
@@ -83,7 +86,7 @@ export function Contact() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-8 shadow-sm sm:p-10">
+          <Reveal direction="right" className="rounded-xl border border-border bg-card p-8 shadow-sm sm:p-10">
             <h2 className="font-serif text-2xl font-bold">Send Us a Message</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               We'll get back to you as soon as possible.
@@ -91,7 +94,7 @@ export function Contact() {
             <div className="mt-8">
               <ContactForm />
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </>
