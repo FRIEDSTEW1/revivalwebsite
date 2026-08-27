@@ -1,7 +1,7 @@
 import { ResourceManager, type FieldConfig } from "@/components/admin/ResourceManager"
 import { PageError, PageLoading } from "@/components/PageState"
 import { useRefetchableList } from "@/lib/hooks"
-import { fetchAll, createRow, updateRow, deleteRow } from "@/lib/adminApi"
+import { fetchAll, createRow, updateRow, deleteRow, persistOrder } from "@/lib/adminApi"
 import type { TeamMember } from "@/lib/types"
 
 const fields: FieldConfig[] = [
@@ -10,7 +10,7 @@ const fields: FieldConfig[] = [
   { key: "specialties", label: "Specialties", type: "list" },
   { key: "experience", label: "Years Experience", type: "number" },
   { key: "bio", label: "Bio", type: "textarea" },
-  { key: "image", label: "Image URL", type: "text" },
+  { key: "image", label: "Photo", type: "image", folder: "team" },
 ]
 
 function toRow(values: Record<string, string>) {
@@ -25,7 +25,9 @@ function toRow(values: Record<string, string>) {
 }
 
 export function ManageTeam() {
-  const { items, loading, error, refetch } = useRefetchableList<TeamMember>(() => fetchAll("team_members"))
+  const { items, loading, error, refetch } = useRefetchableList<TeamMember>(() =>
+    fetchAll("team_members", "order")
+  )
 
   if (loading) return <PageLoading />
   if (error) return <PageError message={error} />
@@ -35,6 +37,11 @@ export function ManageTeam() {
       title="Team Members"
       items={items}
       fields={fields}
+      orderable
+      onReorder={async (ids) => {
+        await persistOrder("team_members", ids)
+        await refetch()
+      }}
       renderRow={(m) => (
         <div>
           <p className="font-medium">{m.name}</p>
@@ -50,7 +57,7 @@ export function ManageTeam() {
         image: m.image,
       })}
       onCreate={async (values) => {
-        await createRow("team_members", toRow(values))
+        await createRow("team_members", { ...toRow(values), order: items.length })
         await refetch()
       }}
       onUpdate={async (id, values) => {

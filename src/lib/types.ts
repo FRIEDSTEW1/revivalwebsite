@@ -9,6 +9,7 @@ export interface GymClass {
   ageRange: string
   benefits: string[]
   image: string
+  order: number
 }
 
 export interface TeamMember {
@@ -19,6 +20,7 @@ export interface TeamMember {
   experience: string
   bio: string
   image: string
+  order: number
 }
 
 export interface Testimonial {
@@ -68,6 +70,19 @@ export interface ContactSubmission {
   message: string
 }
 
+export interface ContactMessage extends ContactSubmission {
+  id: string
+  read: boolean
+  archived: boolean
+  created_at: string
+}
+
 export interface NewsletterSubscriber {
   email: string
+}
+
+export interface NewsletterRow {
+  id: string
+  email: string
+  created_at: string
 }

@@ -1,14 +1,13 @@
 import { ResourceManager, type FieldConfig } from "@/components/admin/ResourceManager"
 import { PageError, PageLoading } from "@/components/PageState"
 import { useRefetchableList } from "@/lib/hooks"
-import { fetchAll, createRow, updateRow, deleteRow } from "@/lib/adminApi"
+import { fetchAll, createRow, updateRow, deleteRow, persistOrder } from "@/lib/adminApi"
 import type { FAQItem } from "@/lib/types"
 
 const fields: FieldConfig[] = [
   { key: "question", label: "Question", type: "text" },
   { key: "answer", label: "Answer", type: "textarea" },
   { key: "category", label: "Category", type: "text" },
-  { key: "order", label: "Order", type: "number" },
 ]
 
 function toRow(values: Record<string, string>) {
@@ -16,12 +15,13 @@ function toRow(values: Record<string, string>) {
     question: values.question,
     answer: values.answer,
     category: values.category,
-    order: Number(values.order) || 0,
   }
 }
 
 export function ManageFAQ() {
-  const { items, loading, error, refetch } = useRefetchableList<FAQItem>(() => fetchAll("faq_items", "order"))
+  const { items, loading, error, refetch } = useRefetchableList<FAQItem>(() =>
+    fetchAll("faq_items", "order")
+  )
 
   if (loading) return <PageLoading />
   if (error) return <PageError message={error} />
@@ -31,20 +31,24 @@ export function ManageFAQ() {
       title="FAQ Items"
       items={items}
       fields={fields}
+      orderable
+      onReorder={async (ids) => {
+        await persistOrder("faq_items", ids)
+        await refetch()
+      }}
       renderRow={(f) => (
         <div>
           <p className="font-medium">{f.question}</p>
-          <p className="text-xs text-muted-foreground">{f.category} · order {f.order}</p>
+          <p className="text-xs text-muted-foreground">{f.category}</p>
         </div>
       )}
       toFormValues={(f) => ({
         question: f.question,
         answer: f.answer,
         category: f.category,
-        order: String(f.order),
       })}
       onCreate={async (values) => {
-        await createRow("faq_items", toRow(values))
+        await createRow("faq_items", { ...toRow(values), order: items.length })
         await refetch()
       }}
       onUpdate={async (id, values) => {

@@ -15,6 +15,7 @@ import type {
 export const classesSeed: GymClass[] = [
   {
     id: "695f7e0e85b72085c006fb3d",
+    order: 0,
     name: "Boxing",
     category: "adults",
     type: "boxing",
@@ -26,6 +27,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb3a",
+    order: 1,
     name: "Adult MMA",
     category: "adults",
     type: "mma",
@@ -37,6 +39,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb3b",
+    order: 2,
     name: "Adult Kickboxing",
     category: "adults",
     type: "kickboxing",
@@ -48,6 +51,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb36",
+    order: 3,
     name: "Kids Kickboxing",
     category: "kids",
     type: "kickboxing",
@@ -59,6 +63,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb34",
+    order: 4,
     name: "Tiger Tots",
     category: "kids",
     type: "kickboxing",
@@ -70,6 +75,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb35",
+    order: 5,
     name: "Tiny Tigers",
     category: "kids",
     type: "kickboxing",
@@ -81,6 +87,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb3c",
+    order: 6,
     name: "Adult BJJ",
     category: "adults",
     type: "bjj",
@@ -92,6 +99,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb39",
+    order: 7,
     name: "Teen Kickboxing",
     category: "teens",
     type: "kickboxing",
@@ -102,6 +110,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb37",
+    order: 8,
     name: "Kids BJJ",
     category: "kids",
     type: "bjj",
@@ -112,6 +121,7 @@ export const classesSeed: GymClass[] = [
   },
   {
     id: "695f7e0e85b72085c006fb3f",
+    order: 9,
     name: "Personal Training",
     category: "adults",
     type: "fitness",
@@ -125,6 +135,7 @@ export const classesSeed: GymClass[] = [
 export const teamSeed: TeamMember[] = [
   {
     id: "695f7e1385b72085c006fb40",
+    order: 0,
     name: "Rick Selverajah",
     role: "Head Coach & Founder",
     specialties: ["MMA", "Kickboxing", "BJJ"],
@@ -134,6 +145,7 @@ export const teamSeed: TeamMember[] = [
   },
   {
     id: "695f7e1385b72085c006fb43",
+    order: 1,
     name: "Kieran Galvin",
     role: "Boxing Coach",
     specialties: ["Boxing"],
@@ -143,6 +155,7 @@ export const teamSeed: TeamMember[] = [
   },
   {
     id: "695f7e1385b72085c006fb41",
+    order: 2,
     name: "Amaan Naveed",
     role: "Senior Coach",
     specialties: ["Kickboxing", "Kids Training", "MMA", "BJJ"],
@@ -152,6 +165,7 @@ export const teamSeed: TeamMember[] = [
   },
   {
     id: "695f7e1385b72085c006fb42",
+    order: 3,
     name: "Oliver Mackin",
     role: "Senior Coach",
     specialties: ["Boxing", "MMA", "Kickboxing", "Personal Training"],
