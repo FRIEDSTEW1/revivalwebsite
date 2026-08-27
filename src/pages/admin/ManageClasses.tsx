@@ -1,7 +1,7 @@
 import { ResourceManager, type FieldConfig } from "@/components/admin/ResourceManager"
 import { PageError, PageLoading } from "@/components/PageState"
 import { useRefetchableList } from "@/lib/hooks"
-import { fetchAll, createRow, updateRow, deleteRow } from "@/lib/adminApi"
+import { fetchAll, createRow, updateRow, deleteRow, persistOrder } from "@/lib/adminApi"
 import type { GymClass } from "@/lib/types"
 
 const fields: FieldConfig[] = [
@@ -11,7 +11,7 @@ const fields: FieldConfig[] = [
   { key: "ageRange", label: "Age Range", type: "text" },
   { key: "description", label: "Description", type: "textarea" },
   { key: "benefits", label: "Benefits", type: "list" },
-  { key: "image", label: "Image URL", type: "text" },
+  { key: "image", label: "Image", type: "image", folder: "classes" },
 ]
 
 function toRow(values: Record<string, string>) {
@@ -27,7 +27,9 @@ function toRow(values: Record<string, string>) {
 }
 
 export function ManageClasses() {
-  const { items, loading, error, refetch } = useRefetchableList<GymClass>(() => fetchAll("classes", "name"))
+  const { items, loading, error, refetch } = useRefetchableList<GymClass>(() =>
+    fetchAll("classes", "order")
+  )
 
   if (loading) return <PageLoading />
   if (error) return <PageError message={error} />
@@ -37,6 +39,11 @@ export function ManageClasses() {
       title="Classes"
       items={items}
       fields={fields}
+      orderable
+      onReorder={async (ids) => {
+        await persistOrder("classes", ids)
+        await refetch()
+      }}
       renderRow={(c) => (
         <div>
           <p className="font-medium">{c.name}</p>
@@ -53,7 +60,7 @@ export function ManageClasses() {
         image: c.image,
       })}
       onCreate={async (values) => {
-        await createRow("classes", toRow(values))
+        await createRow("classes", { ...toRow(values), order: items.length })
         await refetch()
       }}
       onUpdate={async (id, values) => {

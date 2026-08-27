@@ -53,13 +53,11 @@ async function readOrFallback<T>(
 }
 
 export function getClasses(): Promise<GymClass[]> {
-  return readOrFallback(classesSeed, () => supabase!.from("classes").select("*").order("name"))
+  return readOrFallback(classesSeed, () => supabase!.from("classes").select("*").order("order"))
 }
 
 export function getTeam(): Promise<TeamMember[]> {
-  return readOrFallback(teamSeed, () =>
-    supabase!.from("team_members").select("*").order("experience", { ascending: false })
-  )
+  return readOrFallback(teamSeed, () => supabase!.from("team_members").select("*").order("order"))
 }
 
 export function getTestimonials(): Promise<Testimonial[]> {
