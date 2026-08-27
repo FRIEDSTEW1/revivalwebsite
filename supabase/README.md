@@ -60,6 +60,59 @@ Run `npm run dev`, go to `/admin/login`, and sign in with the user you created.
 Edit a class, then reload `/classes` — your change should be live. Submit the contact
 form on `/contact` and confirm the message appears under **Messages** in the admin panel.
 
+## 7. Set up the booking widget (optional)
+
+`/book` lets a visitor say who they're booking for (an adult, or a child —
+and how old), see only the classes that fit, and get a link straight into
+Revival's real Gymdesk booking page. It works by scraping Gymdesk's public
+schedule page server-side (browsers can't — Gymdesk sends no CORS headers),
+which needs one more piece: a Supabase Edge Function.
+
+**a. Install the Supabase CLI** (one-time), if you don't have it:
+
+```bash
+npm install -g supabase
+```
+
+**b. Link this project to your Supabase project** (one-time):
+
+```bash
+supabase login
+supabase link --project-ref your-project-ref
+```
+
+Your project ref is the subdomain in your Project URL —
+`https://<project-ref>.supabase.co`.
+
+**c. Deploy the function:**
+
+```bash
+supabase functions deploy gymdesk-schedule
+```
+
+That's it — no extra secrets to set unless Revival ever changes booking
+software or Gymdesk subdomain. (If it does: `supabase secrets set
+GYMDESK_SUBDOMAIN=new-subdomain`, and update `GYMDESK_SUBDOMAIN` in
+`src/lib/gymdesk.ts` to match, along with `GYMDESK_SCHEDULE_ID` in that same
+file if the schedule id changes too — find both by inspecting a real booking
+link on the new Gymdesk `/book` page.)
+
+**d. Classify your classes.** Go to `/admin/booking-classes` while signed in.
+It lists every class currently on your live Gymdesk schedule; set who each
+one is for (children/adults/both) and an age range. A class with no range
+set stays hidden from `/book` — new or renamed Gymdesk classes need this
+one-time setup before visitors can book them.
+
+**e. Check it worked.** Visit `/book`, choose "Adult" or "Child" (with an
+age), and confirm the classes shown match what you set up. Clicking a time
+should open Revival's real Gymdesk booking page for that exact class and
+date.
+
+If the widget shows a "couldn't load the schedule" message instead, the
+function likely isn't deployed yet, or wasn't reachable — the page falls
+back to your phone number and the contact form rather than showing a broken
+page, but that means live booking isn't working yet.
+
 ## What's in the admin panel
 
 - **Dashboard** (`/admin`) — live counts, unread message count, and recent newsletter
@@ -74,3 +127,6 @@ form on `/contact` and confirm the message appears under **Messages** in the adm
   client with the sender's address pre-filled, and archive instead of only delete.
 - **Newsletter Subscribers** — an "Export CSV" button for pulling the list into
   Mailchimp, Google Sheets, or similar.
+- **Booking Classes** — set which of your live Gymdesk classes are for
+  children/adults and what age range, so `/book` knows what to show. See
+  step 7 above.

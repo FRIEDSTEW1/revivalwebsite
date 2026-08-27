@@ -19,6 +19,7 @@ const tabs: AdminTab[] = [
   { to: "/admin/team", label: "Team" },
   { to: "/admin/testimonials", label: "Testimonials" },
   { to: "/admin/timetable", label: "Timetable" },
+  { to: "/admin/booking-classes", label: "Booking Classes" },
   { to: "/admin/faq", label: "FAQ" },
   { to: "/admin/content", label: "Page Content" },
   { to: "/admin/messages", label: "Messages", badge: "unread" },

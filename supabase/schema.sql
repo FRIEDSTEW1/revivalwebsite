@@ -81,6 +81,30 @@ create table if not exists newsletter_subscribers (
   created_at timestamptz not null default now()
 );
 
+-- Booking widget (see supabase/functions/gymdesk-schedule and src/pages/Book.tsx) --
+
+-- Single-row cache of the scraped Gymdesk schedule. Only the edge function
+-- (via its service-role key, which bypasses RLS) ever writes this — there is
+-- deliberately no public or admin write policy on it below.
+create table if not exists gymdesk_schedule_cache (
+  id int primary key default 1,
+  data jsonb not null default '[]'::jsonb,
+  fetched_at timestamptz,
+  constraint gymdesk_schedule_cache_singleton check (id = 1)
+);
+
+-- Maps a Gymdesk class name (exactly as it appears on the public /book page)
+-- to who it's for. The booking widget hides any class with no matching row
+-- here rather than guessing an age range from its name.
+create table if not exists class_age_rules (
+  id uuid primary key default gen_random_uuid(),
+  gymdesk_name text not null unique,
+  audience text not null check (audience in ('child', 'adult', 'both')),
+  min_age int,
+  max_age int,
+  updated_at timestamptz not null default now()
+);
+
 -- Migrations for projects that ran an earlier version of this file ---
 -- (safe to re-run: every statement below is a no-op if already applied)
 
@@ -117,6 +141,8 @@ alter table faq_items enable row level security;
 alter table page_content enable row level security;
 alter table contact_submissions enable row level security;
 alter table newsletter_subscribers enable row level security;
+alter table gymdesk_schedule_cache enable row level security;
+alter table class_age_rules enable row level security;
 
 -- Public content: anyone can read, only signed-in admins can write.
 -- (each policy is dropped first so this whole file can be re-run safely)
@@ -166,3 +192,15 @@ drop policy if exists "admin manage newsletter_subscribers" on newsletter_subscr
 create policy "admin manage newsletter_subscribers" on newsletter_subscribers for select using (auth.role() = 'authenticated');
 drop policy if exists "admin delete newsletter_subscribers" on newsletter_subscribers;
 create policy "admin delete newsletter_subscribers" on newsletter_subscribers for delete using (auth.role() = 'authenticated');
+
+-- gymdesk_schedule_cache: no policies at all — only the edge function's
+-- service-role key (which bypasses RLS entirely) ever reads or writes it.
+-- The public and the admin panel both go through that function, never the
+-- table directly, so it stays otherwise inaccessible.
+
+-- class_age_rules: anyone can read (the booking widget needs it before a
+-- visitor logs in), only admins can set it.
+drop policy if exists "public read class_age_rules" on class_age_rules;
+create policy "public read class_age_rules" on class_age_rules for select using (true);
+drop policy if exists "admin write class_age_rules" on class_age_rules;
+create policy "admin write class_age_rules" on class_age_rules for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
