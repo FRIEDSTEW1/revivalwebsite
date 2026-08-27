@@ -11,10 +11,13 @@ const links = [
   { to: "/about", label: "About" },
   { to: "/classes", label: "Classes" },
   { to: "/timetable", label: "Timetable" },
+  { to: "/book", label: "Book" },
   { to: "/team", label: "Team" },
   { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ]
+
+const BOOK_CTA_TARGET = "/book"
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
@@ -100,7 +103,7 @@ export function Navbar() {
           </Button>
 
           <Button asChild className="hidden sm:inline-flex">
-            <NavLink to="/contact">
+            <NavLink to={BOOK_CTA_TARGET}>
               <CalendarDays className="h-4 w-4" />
               Get Started
             </NavLink>
@@ -136,7 +139,7 @@ export function Navbar() {
               </nav>
               <SheetClose asChild>
                 <Button asChild size="lg" className="mt-auto">
-                  <NavLink to="/contact">
+                  <NavLink to={BOOK_CTA_TARGET}>
                     <CalendarDays className="h-4 w-4" />
                     Get Started
                   </NavLink>

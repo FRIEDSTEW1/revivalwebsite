@@ -5,6 +5,7 @@ import { AdminLayout } from "@/pages/admin/AdminLayout"
 import { PageLoading } from "@/components/PageState"
 
 const Home = lazy(() => import("@/pages/Home").then((m) => ({ default: m.Home })))
+const Book = lazy(() => import("@/pages/Book").then((m) => ({ default: m.Book })))
 const About = lazy(() => import("@/pages/About").then((m) => ({ default: m.About })))
 const Classes = lazy(() => import("@/pages/Classes").then((m) => ({ default: m.Classes })))
 const Team = lazy(() => import("@/pages/Team").then((m) => ({ default: m.Team })))
@@ -21,6 +22,9 @@ const ManageClasses = lazy(() => import("@/pages/admin/ManageClasses").then((m) 
 const ManageTeam = lazy(() => import("@/pages/admin/ManageTeam").then((m) => ({ default: m.ManageTeam })))
 const ManageTestimonials = lazy(() =>
   import("@/pages/admin/ManageTestimonials").then((m) => ({ default: m.ManageTestimonials }))
+)
+const ManageBookingClasses = lazy(() =>
+  import("@/pages/admin/ManageBookingClasses").then((m) => ({ default: m.ManageBookingClasses }))
 )
 const ManageTimetable = lazy(() =>
   import("@/pages/admin/ManageTimetable").then((m) => ({ default: m.ManageTimetable }))
@@ -43,6 +47,7 @@ export function App() {
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="classes" element={<Classes />} />
+            <Route path="book" element={<Book />} />
             <Route path="team" element={<Team />} />
             <Route path="timetable" element={<Timetable />} />
             <Route path="faq" element={<FAQ />} />
@@ -56,6 +61,7 @@ export function App() {
               <Route path="classes" element={<ManageClasses />} />
               <Route path="team" element={<ManageTeam />} />
               <Route path="testimonials" element={<ManageTestimonials />} />
+              <Route path="booking-classes" element={<ManageBookingClasses />} />
               <Route path="timetable" element={<ManageTimetable />} />
               <Route path="faq" element={<ManageFAQ />} />
               <Route path="content" element={<ManagePageContent />} />

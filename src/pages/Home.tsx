@@ -104,7 +104,7 @@ function Hero() {
 
           <motion.div {...rise(0.27)} className="mt-9 flex flex-wrap gap-3">
             <Button asChild size="lg">
-              <Link to="/contact">
+              <Link to="/book">
                 <CalendarDays className="h-4 w-4" />
                 Get Started Today
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -286,7 +286,7 @@ export function Home() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
-              <Link to="/contact">
+              <Link to="/book">
                 <CalendarDays className="h-4 w-4" />
                 Book Your Free Trial
               </Link>
