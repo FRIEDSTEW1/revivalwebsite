@@ -1,5 +1,5 @@
 import { supabase } from "./supabase"
-import type { BookingAudience, ClassAgeRule, GymdeskClass, GymdeskSlot } from "./types"
+import type { BookingAudience, ClassAgeRule, GymdeskClass, GymdeskSlot, MatchedClass } from "./types"
 
 // Revival MMA's real Gymdesk constants (from the public /book page's own
 // booking links). Not secret — they're visible in any booking URL on the
@@ -52,6 +52,39 @@ export function nextOccurrenceISO(
   return null
 }
 
+/** Does this slot actually run on this specific calendar date? */
+export function occursOnDate(slot: GymdeskSlot, iso: string): boolean {
+  if (slot.scheduled) return slot.scheduled === iso
+  if (slot.day == null) return false
+
+  const targetJsDay = gymdeskDayToJs(slot.day)
+  if (new Date(`${iso}T12:00:00`).getDay() !== targetJsDay) return false
+  if (slot.startDate && iso < slot.startDate) return false
+  if (slot.cancelDate === iso) return false
+  return true
+}
+
+export interface DateOption {
+  iso: string
+  label: string
+  sub: string
+}
+
+/** A quick-pick strip of the next `days` calendar dates, for a date picker. */
+export function upcomingDateOptions(days = 14, from: Date = new Date()): DateOption[] {
+  const out: DateOption[] = []
+  for (let i = 0; i < days; i++) {
+    const d = new Date(from)
+    d.setDate(from.getDate() + i)
+    out.push({
+      iso: isoDate(d),
+      label: i === 0 ? "Today" : i === 1 ? "Tomorrow" : d.toLocaleDateString("en-GB", { weekday: "short" }),
+      sub: d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }),
+    })
+  }
+  return out
+}
+
 /** "20:00:00" -> "8pm", "16:30:00" -> "4:30pm" */
 export function fmtTime12(time: string): string {
   const [hStr, mStr] = (time || "").split(":")
@@ -101,12 +134,16 @@ export function classesForPerson(
   rules: ClassAgeRule[],
   audience: "child" | "adult",
   age?: number
-): GymdeskClass[] {
+): MatchedClass[] {
   const ruleByName = new Map(rules.map((r) => [r.gymdesk_name, r]))
-  return schedule.filter((c) => {
+  const out: MatchedClass[] = []
+  for (const c of schedule) {
     const rule = ruleByName.get(c.name)
-    return rule ? ruleMatchesPerson(rule, audience, age) : false
-  })
+    if (rule && ruleMatchesPerson(rule, audience, age)) {
+      out.push({ ...c, discipline: rule.discipline })
+    }
+  }
+  return out
 }
 
 interface GymdeskFetchResult {

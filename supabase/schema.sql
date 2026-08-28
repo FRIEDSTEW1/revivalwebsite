@@ -102,6 +102,10 @@ create table if not exists class_age_rules (
   audience text not null check (audience in ('child', 'adult', 'both')),
   min_age int,
   max_age int,
+  -- Free-text grouping label (e.g. "MMA", "Boxing") so the booking widget can
+  -- tab/filter alike classes together — "Adult MMA" and "MMA Fundamentals"
+  -- both set to "MMA" show under the same tab despite different names.
+  discipline text,
   updated_at timestamptz not null default now()
 );
 
@@ -112,6 +116,7 @@ alter table classes add column if not exists "order" int not null default 0;
 alter table team_members add column if not exists "order" int not null default 0;
 alter table contact_submissions add column if not exists read boolean not null default false;
 alter table contact_submissions add column if not exists archived boolean not null default false;
+alter table class_age_rules add column if not exists discipline text;
 
 -- Storage bucket for admin-uploaded images (classes, team, testimonials) --
 

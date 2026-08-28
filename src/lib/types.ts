@@ -110,6 +110,11 @@ export interface GymdeskClass {
   slots: GymdeskSlot[]
 }
 
+/** A GymdeskClass that has been matched against an admin-set age rule. */
+export interface MatchedClass extends GymdeskClass {
+  discipline: string | null
+}
+
 export type BookingAudience = "child" | "adult" | "both"
 
 export interface ClassAgeRule {
@@ -118,4 +123,23 @@ export interface ClassAgeRule {
   audience: BookingAudience
   min_age: number | null
   max_age: number | null
+  discipline: string | null
+}
+
+export interface BookingPerson {
+  id: string
+  audience: "adult" | "child"
+  age?: number
+  label: string
+}
+
+export interface Booking {
+  id: string
+  personId: string
+  personLabel: string
+  className: string
+  discipline: string | null
+  dateIso: string
+  time: string
+  link: string
 }

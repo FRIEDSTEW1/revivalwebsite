@@ -99,11 +99,19 @@ link on the new Gymdesk `/book` page.)
 
 **d. Classify your classes.** Go to `/admin/booking-classes` while signed in.
 It lists every class currently on your live Gymdesk schedule; set who each
-one is for (children/adults/both) and an age range. A class with no range
-set stays hidden from `/book` — new or renamed Gymdesk classes need this
-one-time setup before visitors can book them.
+one is for (children/adults/both), an age range, and a **group** (e.g. "MMA",
+"Boxing", "Kickboxing") — alike classes with different names, like "Adult
+MMA" and "MMA Fundamentals", should get the same group so they tab together
+on `/book`. A class with no range set stays hidden from `/book` — new or
+renamed Gymdesk classes need this one-time setup before visitors can book
+them.
 
-**e. Check it worked.** Visit `/book`, choose "Adult" or "Child" (with an
+**e. Set your SumUp payment links**, if they ever change. They're in
+`src/lib/payment.ts` — one link per headcount (1, 2, or 3 people); a booking
+of 4+ is capped in the widget with a message to contact you directly, since
+there's no link for that.
+
+**f. Check it worked.** Visit `/book`, choose "Adult" or "Child" (with an
 age), and confirm the classes shown match what you set up. Clicking a time
 should open Revival's real Gymdesk booking page for that exact class and
 date.
