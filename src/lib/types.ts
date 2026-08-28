@@ -143,3 +143,21 @@ export interface Booking {
   time: string
   link: string
 }
+
+/** A logged checkout attempt — see supabase/schema.sql `booking_requests`. */
+export interface BookingRequest {
+  id: string
+  session_id: string
+  contact_name: string
+  contact_email: string
+  contact_phone: string | null
+  person_label: string
+  class_name: string
+  discipline: string | null
+  date_iso: string
+  time: string
+  gymdesk_link: string
+  people_count: number
+  payment_status: "pending" | "paid"
+  created_at: string
+}
