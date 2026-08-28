@@ -26,6 +26,9 @@ const ManageTestimonials = lazy(() =>
 const ManageBookingClasses = lazy(() =>
   import("@/pages/admin/ManageBookingClasses").then((m) => ({ default: m.ManageBookingClasses }))
 )
+const BookingRequests = lazy(() =>
+  import("@/pages/admin/BookingRequests").then((m) => ({ default: m.BookingRequests }))
+)
 const ManageTimetable = lazy(() =>
   import("@/pages/admin/ManageTimetable").then((m) => ({ default: m.ManageTimetable }))
 )
@@ -62,6 +65,7 @@ export function App() {
               <Route path="team" element={<ManageTeam />} />
               <Route path="testimonials" element={<ManageTestimonials />} />
               <Route path="booking-classes" element={<ManageBookingClasses />} />
+              <Route path="booking-requests" element={<BookingRequests />} />
               <Route path="timetable" element={<ManageTimetable />} />
               <Route path="faq" element={<ManageFAQ />} />
               <Route path="content" element={<ManagePageContent />} />

@@ -49,7 +49,7 @@ export async function upsertPageContent(page: string, content: string) {
 /** Row count for a table, optionally filtered to rows where `column` equals `value`. */
 export async function countRows(
   table: string,
-  filter?: { column: string; value: boolean }
+  filter?: { column: string; value: boolean | string }
 ): Promise<number> {
   const client = requireSupabase()
   let query = client.from(table).select("*", { count: "exact", head: true })

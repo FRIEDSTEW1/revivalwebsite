@@ -10,7 +10,7 @@ interface AdminTab {
   to: string
   label: string
   end?: boolean
-  badge?: "unread"
+  badge?: "unread" | "pending"
 }
 
 const tabs: AdminTab[] = [
@@ -20,6 +20,7 @@ const tabs: AdminTab[] = [
   { to: "/admin/testimonials", label: "Testimonials" },
   { to: "/admin/timetable", label: "Timetable" },
   { to: "/admin/booking-classes", label: "Booking Classes" },
+  { to: "/admin/booking-requests", label: "Booking Requests", badge: "pending" },
   { to: "/admin/faq", label: "FAQ" },
   { to: "/admin/content", label: "Page Content" },
   { to: "/admin/messages", label: "Messages", badge: "unread" },
@@ -29,11 +30,15 @@ const tabs: AdminTab[] = [
 export function AdminLayout() {
   const { session, loading, signOut } = useAuth()
   const [unread, setUnread] = useState(0)
+  const [pending, setPending] = useState(0)
 
   useEffect(() => {
     if (!session || !isSupabaseConfigured) return
     countRows("contact_submissions", { column: "read", value: false })
       .then(setUnread)
+      .catch(() => {})
+    countRows("booking_requests", { column: "payment_status", value: "pending" })
+      .then(setPending)
       .catch(() => {})
   }, [session])
 
@@ -69,6 +74,11 @@ export function AdminLayout() {
             {tab.badge === "unread" && unread > 0 && (
               <span className="rounded-full bg-gold px-1.5 py-0.5 text-[10px] font-bold leading-none text-gray-900">
                 {unread}
+              </span>
+            )}
+            {tab.badge === "pending" && pending > 0 && (
+              <span className="rounded-full bg-gold px-1.5 py-0.5 text-[10px] font-bold leading-none text-gray-900">
+                {pending}
               </span>
             )}
           </NavLink>

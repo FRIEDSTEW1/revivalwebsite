@@ -11,7 +11,7 @@ export const GYMDESK_SCHEDULE_ID = "28679"
 
 const SCAN_HORIZON_DAYS = 60
 
-function isoDate(d: Date): string {
+export function isoDate(d: Date): string {
   const yyyy = d.getFullYear()
   const mm = String(d.getMonth() + 1).padStart(2, "0")
   const dd = String(d.getDate()).padStart(2, "0")

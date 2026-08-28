@@ -96,6 +96,29 @@ create table if not exists gymdesk_schedule_cache (
 -- Maps a Gymdesk class name (exactly as it appears on the public /book page)
 -- to who it's for. The booking widget hides any class with no matching row
 -- here rather than guessing an age range from its name.
+-- One row per person+class in a checkout. `session_id` groups everything
+-- paid together in one SumUp payment so the admin can see it as one booking.
+-- payment_status is set by an admin after checking the real SumUp
+-- transactions list — this site has no way to confirm payment on its own
+-- (see supabase/README.md for why), so "paid" here is a manual confirmation,
+-- not an automatic one.
+create table if not exists booking_requests (
+  id uuid primary key default gen_random_uuid(),
+  session_id uuid not null,
+  contact_name text not null,
+  contact_email text not null,
+  contact_phone text,
+  person_label text not null,
+  class_name text not null,
+  discipline text,
+  date_iso date not null,
+  time text not null,
+  gymdesk_link text not null,
+  people_count int not null,
+  payment_status text not null default 'pending' check (payment_status in ('pending', 'paid')),
+  created_at timestamptz not null default now()
+);
+
 create table if not exists class_age_rules (
   id uuid primary key default gen_random_uuid(),
   gymdesk_name text not null unique,
@@ -148,6 +171,7 @@ alter table contact_submissions enable row level security;
 alter table newsletter_subscribers enable row level security;
 alter table gymdesk_schedule_cache enable row level security;
 alter table class_age_rules enable row level security;
+alter table booking_requests enable row level security;
 
 -- Public content: anyone can read, only signed-in admins can write.
 -- (each policy is dropped first so this whole file can be re-run safely)
@@ -209,3 +233,15 @@ drop policy if exists "public read class_age_rules" on class_age_rules;
 create policy "public read class_age_rules" on class_age_rules for select using (true);
 drop policy if exists "admin write class_age_rules" on class_age_rules;
 create policy "admin write class_age_rules" on class_age_rules for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+-- booking_requests: anyone can log a checkout attempt (the widget writes
+-- these right before sending someone to pay), only admins can read/manage
+-- the list to reconcile against real SumUp transactions.
+drop policy if exists "public insert booking_requests" on booking_requests;
+create policy "public insert booking_requests" on booking_requests for insert with check (true);
+drop policy if exists "admin manage booking_requests" on booking_requests;
+create policy "admin manage booking_requests" on booking_requests for select using (auth.role() = 'authenticated');
+drop policy if exists "admin update booking_requests" on booking_requests;
+create policy "admin update booking_requests" on booking_requests for update using (auth.role() = 'authenticated');
+drop policy if exists "admin delete booking_requests" on booking_requests;
+create policy "admin delete booking_requests" on booking_requests for delete using (auth.role() = 'authenticated');

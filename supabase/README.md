@@ -11,14 +11,15 @@ Pick a region close to your users — London for a Harrow gym.
 ## 2. Create the tables
 
 In your project, open **SQL Editor** → **New query**, paste the contents of
-[`schema.sql`](./schema.sql), and run it. This creates all eight tables, their
+[`schema.sql`](./schema.sql), and run it. This creates all the tables, their
 Row Level Security policies, and a `media` storage bucket for admin-uploaded
 images (classes, team, testimonials):
 
 | Table | Public access | Admin access |
 | --- | --- | --- |
-| `classes`, `team_members`, `testimonials`, `timetable_entries`, `faq_items`, `page_content` | read only | full |
-| `contact_submissions`, `newsletter_subscribers` | insert only | read + update + delete |
+| `classes`, `team_members`, `testimonials`, `timetable_entries`, `faq_items`, `page_content`, `class_age_rules` | read only | full |
+| `contact_submissions`, `newsletter_subscribers`, `booking_requests` | insert only | read + update + delete |
+| `gymdesk_schedule_cache` | none (edge function only) | none (edge function only) |
 
 Already ran an earlier version of this file? It's safe to run again — every
 statement either checks `if not exists` or drops-then-recreates, so re-running
@@ -112,14 +113,38 @@ of 4+ is capped in the widget with a message to contact you directly, since
 there's no link for that.
 
 **f. Check it worked.** Visit `/book`, choose "Adult" or "Child" (with an
-age), and confirm the classes shown match what you set up. Clicking a time
-should open Revival's real Gymdesk booking page for that exact class and
-date.
+age), and confirm the classes shown match what you set up. Picking a class
+takes you to a review step, then a details step asking for name/email/phone
+before the Pay button appears — this is expected (see "About payment" below).
+Clicking Pay should open a SumUp payment page in a new tab and reveal the
+Gymdesk booking link(s) on the confirmation screen.
 
 If the widget shows a "couldn't load the schedule" message instead, the
 function likely isn't deployed yet, or wasn't reachable — the page falls
 back to your phone number and the contact form rather than showing a broken
 page, but that means live booking isn't working yet.
+
+### About payment — what this can and can't guarantee
+
+The SumUp links in `src/lib/payment.ts` are static "Pay by Link" links, not a
+connected payment API. That means the website **cannot automatically confirm
+someone actually paid** — once a visitor is sent to SumUp, the site has no
+way to know whether they completed the payment, abandoned it, or closed the
+tab. (Automatic confirmation would need SumUp's Checkout API and webhooks,
+which requires a SumUp developer/API account this project doesn't have.)
+
+To make this workable without that, the flow is ordered so the Gymdesk
+booking link is never shown until *after* someone clicks Pay, and every
+click is logged to the `booking_requests` table first — with their name,
+email, phone, and exactly what they tried to book — before the payment tab
+opens. That gives you a paper trail, not a guarantee.
+
+**Your job:** open `/admin/booking-requests` regularly, cross-check each
+pending row's name/amount against your real SumUp transaction list (in your
+SumUp dashboard or app), and click **Mark Paid** once you've confirmed it.
+Anyone who clicked Pay but never actually paid will sit there as "Pending"
+until you follow up or delete it — the site will never mark something Paid
+on its own.
 
 ## What's in the admin panel
 
@@ -138,3 +163,7 @@ page, but that means live booking isn't working yet.
 - **Booking Classes** — set which of your live Gymdesk classes are for
   children/adults and what age range, so `/book` knows what to show. See
   step 7 above.
+- **Booking Requests** — every `/book` checkout attempt, grouped by visit,
+  with a Pending/Paid tab and a **Mark Paid** button per booking. See "About
+  payment" above — this list is for manually reconciling against SumUp, not
+  an automatic record of who's paid.
