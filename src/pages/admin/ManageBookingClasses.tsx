@@ -18,6 +18,7 @@ interface RowState {
   audience: BookingAudience
   minAge: string
   maxAge: string
+  discipline: string
   saving: boolean
 }
 
@@ -48,6 +49,7 @@ export function ManageBookingClasses() {
             audience: rule?.audience ?? "child",
             minAge: rule?.min_age != null ? String(rule.min_age) : "",
             maxAge: rule?.max_age != null ? String(rule.max_age) : "",
+            discipline: rule?.discipline ?? "",
             saving: false,
           }
         })
@@ -74,6 +76,7 @@ export function ManageBookingClasses() {
       audience: row.audience,
       min_age: row.minAge.trim() === "" ? null : Number(row.minAge),
       max_age: row.maxAge.trim() === "" ? null : Number(row.maxAge),
+      discipline: row.discipline.trim() === "" ? null : row.discipline.trim(),
       updated_at: new Date().toISOString(),
     }
     try {
@@ -94,6 +97,7 @@ export function ManageBookingClasses() {
   if (error) return <PageError message={error} />
 
   const unclassifiedCount = rows.filter((r) => !r.rule).length
+  const knownDisciplines = [...new Set(rows.map((r) => r.discipline).filter(Boolean))].sort()
 
   return (
     <div className="flex flex-col gap-4">
@@ -101,9 +105,11 @@ export function ManageBookingClasses() {
         <div>
           <h2 className="font-serif text-xl font-semibold">Booking Classes</h2>
           <p className="text-sm text-muted-foreground">
-            Set who each Gymdesk class is for. The booking widget on{" "}
-            <code className="text-xs">/book</code> only shows classes with an age range set here —
-            new or renamed classes need to be classified before they'll appear to visitors.
+            Set who each Gymdesk class is for and its group (e.g. "Adult MMA" and "MMA
+            Fundamentals" both set to group "MMA" so they tab together on the booking widget). The
+            widget on <code className="text-xs">/book</code> only shows classes with an age range
+            set here — new or renamed classes need to be classified before they'll appear to
+            visitors.
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={load} className="shrink-0 gap-1.5">
@@ -125,6 +131,12 @@ export function ManageBookingClasses() {
           No classes found on the live Gymdesk schedule yet.
         </p>
       )}
+
+      <datalist id="discipline-options">
+        {knownDisciplines.map((d) => (
+          <option key={d} value={d} />
+        ))}
+      </datalist>
 
       {rows.map((row) => (
         <Card
@@ -151,6 +163,17 @@ export function ManageBookingClasses() {
                 <SelectItem value="both">Both</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-xs">Group</Label>
+            <Input
+              list="discipline-options"
+              className="w-32"
+              placeholder="e.g. MMA"
+              value={row.discipline}
+              onChange={(e) => patchRow(row.gymdeskName, { discipline: e.target.value })}
+            />
           </div>
 
           <div className="flex flex-col gap-1.5">
