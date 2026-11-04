@@ -1,14 +1,17 @@
+import { FramedImage } from "@/components/FramedImage"
 import type { TeamMember } from "@/lib/types"
 
 export function TeamCard({ member }: { member: TeamMember }) {
   return (
     <article className="card-lift group overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
-        <img
+        <FramedImage
           src={member.image?.trim()}
+          framing={member.image_framing}
+          defaultY={0}
           alt={member.name}
           loading="lazy"
-          className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
+          className="h-full w-full object-cover object-top"
         />
         <div
           aria-hidden

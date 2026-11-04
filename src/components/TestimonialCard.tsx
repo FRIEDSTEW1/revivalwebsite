@@ -1,3 +1,4 @@
+import { FramedImage } from "@/components/FramedImage"
 import { Quote, Star } from "lucide-react"
 import type { Testimonial } from "@/lib/types"
 
@@ -24,8 +25,8 @@ export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
       </blockquote>
 
       <figcaption className="mt-6 flex items-center gap-3 border-t border-border pt-5">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold/15 font-serif text-sm font-bold text-gold-dark dark:text-gold">
-          {testimonial.name.charAt(0)}
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gold/15 font-serif text-sm font-bold text-gold-dark dark:text-gold">
+          <FramedImage src={testimonial.image} framing={testimonial.image_framing} alt="" loading="lazy" className="h-full w-full object-cover" fallback={testimonial.name.charAt(0)} />
         </span>
         <span>
           <span className="block text-sm font-semibold">{testimonial.name}</span>

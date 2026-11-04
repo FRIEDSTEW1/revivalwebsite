@@ -245,3 +245,8 @@ drop policy if exists "admin update booking_requests" on booking_requests;
 create policy "admin update booking_requests" on booking_requests for update using (auth.role() = 'authenticated');
 drop policy if exists "admin delete booking_requests" on booking_requests;
 create policy "admin delete booking_requests" on booking_requests for delete using (auth.role() = 'authenticated');
+
+-- Non-destructive crop settings; NULL preserves legacy positioning.
+alter table public.classes add column if not exists image_framing jsonb;
+alter table public.team_members add column if not exists image_framing jsonb;
+alter table public.testimonials add column if not exists image_framing jsonb;

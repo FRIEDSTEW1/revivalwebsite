@@ -111,6 +111,7 @@ export function ResourceManager<T extends { id: string }>({
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<T | null>(null)
   const [values, setValues] = useState<Record<string, string>>({})
+  const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [order, setOrder] = useState<string[]>(() => items.map((i) => i.id))
 
@@ -210,15 +211,15 @@ export function ResourceManager<T extends { id: string }>({
             <p className="text-xs text-muted-foreground">Drag to reorder — changes save immediately.</p>
           )}
         </div>
-        <Sheet open={open} onOpenChange={setOpen}>
+        <Sheet open={open} onOpenChange={(next) => { if (!saving && !uploading) setOpen(next) }}>
           <SheetTrigger asChild>
             <Button size="sm" onClick={openCreate} className="gap-1.5">
               <Plus className="h-4 w-4" /> Add
             </Button>
           </SheetTrigger>
-          <SheetContent className="overflow-y-auto">
+          <SheetContent className="w-full overflow-y-auto sm:max-w-md">
             <SheetTitle>{editing ? "Edit" : "Add"} {title.slice(0, -1)}</SheetTitle>
-            <div className="flex flex-col gap-4">
+            <fieldset disabled={saving} className="flex min-w-0 flex-col gap-4">
               {fields.map((field) => (
                 <div key={field.key} className="flex flex-col gap-2">
                   <Label htmlFor={field.key}>{field.label}</Label>
@@ -248,8 +249,12 @@ export function ResourceManager<T extends { id: string }>({
                   )}
                   {field.type === "image" && (
                     <ImageUploadField
+                      onBusyChange={setUploading}
+                      id={field.key}
+                      framing={values[`${field.key}_framing`]}
+                      onFramingChange={(framing) => setValues((v) => ({ ...v, [`${field.key}_framing`]: JSON.stringify(framing) }))}
                       value={values[field.key] ?? ""}
-                      onChange={(url) => setValues((v) => ({ ...v, [field.key]: url }))}
+                      onChange={(url) => setValues((v) => ({ ...v, [field.key]: url, [`${field.key}_framing`]: "" }))}
                       folder={field.folder ?? "misc"}
                     />
                   )}
@@ -264,10 +269,11 @@ export function ResourceManager<T extends { id: string }>({
                   )}
                 </div>
               ))}
-              <Button onClick={handleSave} disabled={saving} className="mt-2">
+              <Button type="button" variant="outline" disabled={saving || uploading} onClick={() => setOpen(false)}>Cancel</Button>
+              <Button onClick={handleSave} disabled={saving || uploading} className="mt-2">
                 {saving ? "Saving..." : "Save"}
               </Button>
-            </div>
+            </fieldset>
           </SheetContent>
         </Sheet>
       </div>

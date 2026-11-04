@@ -1,3 +1,5 @@
+import type { ImageFraming } from "./imageFraming"
+
 export type ClassCategory = "kids" | "teens" | "adults"
 
 export interface GymClass {
@@ -9,6 +11,7 @@ export interface GymClass {
   ageRange: string
   benefits: string[]
   image: string
+  image_framing?: ImageFraming | null
   order: number
 }
 
@@ -20,6 +23,7 @@ export interface TeamMember {
   experience: string
   bio: string
   image: string
+  image_framing?: ImageFraming | null
   order: number
 }
 
@@ -30,6 +34,7 @@ export interface Testimonial {
   content: string
   rating: number
   image: string
+  image_framing?: ImageFraming | null
 }
 
 export type Weekday =

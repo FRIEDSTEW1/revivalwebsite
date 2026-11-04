@@ -20,16 +20,23 @@ export async function fetchAll<T>(
   return data as T[]
 }
 
+function contentWriteError(error: { message: string; code?: string }) {
+  if (error.message.includes("image_framing")) {
+    return new Error("Photo adjustments need a database update. Apply the photo_framing SQL migration, then try saving again. Your changes are still here.")
+  }
+  return new Error(error.message)
+}
+
 export async function createRow(table: string, row: Record<string, unknown>) {
   const client = requireSupabase()
   const { error } = await client.from(table).insert(row)
-  if (error) throw error
+  if (error) throw contentWriteError(error)
 }
 
 export async function updateRow(table: string, id: string, row: Record<string, unknown>) {
   const client = requireSupabase()
   const { error } = await client.from(table).update(row).eq("id", id)
-  if (error) throw error
+  if (error) throw contentWriteError(error)
 }
 
 export async function deleteRow(table: string, id: string) {

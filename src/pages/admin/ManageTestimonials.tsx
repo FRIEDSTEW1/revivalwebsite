@@ -1,3 +1,4 @@
+import { parseFraming } from "@/lib/imageFraming"
 import { Star } from "lucide-react"
 import { ResourceManager, type FieldConfig } from "@/components/admin/ResourceManager"
 import { PageError, PageLoading } from "@/components/PageState"
@@ -20,6 +21,7 @@ function toRow(values: Record<string, string>) {
     content: values.content,
     rating: Number(values.rating) || 5,
     image: values.image,
+    image_framing: parseFraming(values.image_framing, 50),
   }
 }
 
@@ -56,6 +58,7 @@ export function ManageTestimonials() {
         content: t.content,
         rating: String(t.rating),
         image: t.image,
+        image_framing: JSON.stringify(t.image_framing ?? null),
       })}
       onCreate={async (values) => {
         await createRow("testimonials", toRow(values))

@@ -167,3 +167,18 @@ on its own.
   with a Pending/Paid tab and a **Mark Paid** button per booking. See "About
   payment" above — this list is for manually reconciling against SumUp, not
   an automatic record of who's paid.
+
+
+## Photo framing update
+
+For an existing database, run only
+[`migrations/20261104210512_photo_framing.sql`](./migrations/20261104210512_photo_framing.sql)
+in the project's SQL Editor before deploying the updated frontend. This is an
+additive, repeatable migration: it adds nullable `image_framing` JSONB columns to
+`classes`, `team_members`, and `testimonials`, without rewriting photos or rows.
+No changes to RLS, grants, storage, or access are required. Fresh setups also get
+these columns from `schema.sql`. Keep the old columns and framing metadata if
+rolling the frontend back; the previous frontend simply ignores the new columns.
+
+After applying, save a crop in each admin editor, reopen it, and reload its public
+page to verify the deployed frontend and database together.

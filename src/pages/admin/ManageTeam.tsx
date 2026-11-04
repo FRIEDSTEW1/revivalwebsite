@@ -1,3 +1,4 @@
+import { parseFraming } from "@/lib/imageFraming"
 import { ResourceManager, type FieldConfig } from "@/components/admin/ResourceManager"
 import { PageError, PageLoading } from "@/components/PageState"
 import { useRefetchableList } from "@/lib/hooks"
@@ -21,6 +22,7 @@ function toRow(values: Record<string, string>) {
     experience: values.experience,
     bio: values.bio,
     image: values.image,
+    image_framing: parseFraming(values.image_framing, 0),
   }
 }
 
@@ -55,6 +57,7 @@ export function ManageTeam() {
         experience: m.experience,
         bio: m.bio,
         image: m.image,
+        image_framing: JSON.stringify(m.image_framing ?? null),
       })}
       onCreate={async (values) => {
         await createRow("team_members", { ...toRow(values), order: items.length })

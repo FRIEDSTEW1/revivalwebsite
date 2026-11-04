@@ -1,3 +1,4 @@
+import { parseFraming } from "@/lib/imageFraming"
 import { ResourceManager, type FieldConfig } from "@/components/admin/ResourceManager"
 import { PageError, PageLoading } from "@/components/PageState"
 import { useRefetchableList } from "@/lib/hooks"
@@ -23,6 +24,7 @@ function toRow(values: Record<string, string>) {
     description: values.description,
     benefits: values.benefits.split(",").map((s) => s.trim()).filter(Boolean),
     image: values.image,
+    image_framing: parseFraming(values.image_framing, 50),
   }
 }
 
@@ -58,6 +60,7 @@ export function ManageClasses() {
         description: c.description,
         benefits: c.benefits.join(", "),
         image: c.image,
+        image_framing: JSON.stringify(c.image_framing ?? null),
       })}
       onCreate={async (values) => {
         await createRow("classes", { ...toRow(values), order: items.length })
