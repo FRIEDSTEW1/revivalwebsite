@@ -2,7 +2,6 @@ import { Award, ShieldCheck, Sparkles, Users } from "lucide-react"
 import { SEO } from "@/components/SEO"
 import { PageHeader } from "@/components/PageHeader"
 import { SectionHeading } from "@/components/SectionHeading"
-import { Reveal } from "@/components/motion/Reveal"
 import { PageError, PageLoading } from "@/components/PageState"
 import { useAsync } from "@/lib/hooks"
 import { getPageContent } from "@/lib/data"
@@ -73,10 +72,9 @@ export function About() {
           />
 
           <div className="mt-14 grid gap-6 sm:grid-cols-2">
-            {values.map(({ icon: Icon, title, body }, i) => (
-              <Reveal
+            {values.map(({ icon: Icon, title, body }) => (
+              <div
                 key={title}
-                index={i}
                 className="card-lift h-full rounded-xl border border-border bg-card p-7 shadow-sm"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-gold/10 text-gold-dark dark:text-gold">
@@ -84,7 +82,7 @@ export function About() {
                 </span>
                 <h3 className="mt-5 font-serif text-xl font-bold">{title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
-              </Reveal>
+              </div>
             ))}
           </div>
         </div>

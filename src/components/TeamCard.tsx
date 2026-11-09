@@ -1,7 +1,7 @@
 import { FramedImage } from "@/components/FramedImage"
 import type { TeamMember } from "@/lib/types"
 
-export function TeamCard({ member }: { member: TeamMember }) {
+export function TeamCard({ member, priority = false }: { member: TeamMember; priority?: boolean }) {
   return (
     <article className="card-lift group overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
@@ -10,7 +10,9 @@ export function TeamCard({ member }: { member: TeamMember }) {
           framing={member.image_framing}
           defaultY={0}
           alt={member.name}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
+          sizes="(min-width: 1280px) 285px, (min-width: 1024px) 24vw, (min-width: 640px) 48vw, calc(100vw - 40px)"
           className="h-full w-full object-cover object-top"
         />
         <div

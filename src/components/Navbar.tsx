@@ -22,7 +22,9 @@ export function Logo({ compact = false, iconOnMobile = false }: { compact?: bool
   return (
     <span className="flex items-center gap-3">
       <img
-        src="/logo.jpeg"
+        src="/images/header-logo.webp"
+        width="44"
+        height="44"
         alt="Revival MMA"
         className="h-11 w-11 rounded-full object-cover ring-1 ring-gold/40"
       />

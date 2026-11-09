@@ -1,0 +1,5 @@
+[images]
+  remote_images = [
+    '^https://xkathwpvizoyzqnxpdgd\.supabase\.co/storage/v1/object/public/media/.*$',
+    '^https://i\.postimg\.cc/.*$',
+  ]

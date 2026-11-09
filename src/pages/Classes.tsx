@@ -96,8 +96,8 @@ export function Classes() {
             )}
             {classes && filtered.length > 0 && (
               <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-                {filtered.map((c) => (
-                  <ClassCard key={c.id} gymClass={c} />
+                {filtered.map((c, i) => (
+                  <ClassCard key={c.id} gymClass={c} priority={i === 0} />
                 ))}
               </div>
             )}
