@@ -46,7 +46,7 @@ supabase/
   schema.sql        tables + row level security
   seed.sql          the real content, for a fresh project
   functions/
-    gymdesk-schedule/  scrapes + caches the live class schedule for /book
+    gymdesk-schedule/  scrapes + caches the live class schedule for booking administration
 ```
 
 Every page reads through `src/lib/data.ts`. When `VITE_SUPABASE_URL` and
@@ -62,10 +62,10 @@ admin panel show up on the public pages straight away.
 | `/about` | Story, philosophy, values, documentary video |
 | `/classes` | All 10 classes, filterable by age group |
 | `/timetable` | Weekly schedule, filterable by day and age group |
-| `/book` | Booking widget — pick adult/child (+ age), see matching live Gymdesk classes, get a booking link |
+| `/book` | Trial request form, phone/email, map |
 | `/team` | Coach profiles |
 | `/faq` | Accordion of common questions |
-| `/contact` | Contact form, phone/email, map |
+| `/contact` | Redirects to `/book` |
 | `/newsletter` | Email signup |
 | `/terms` | Full terms & conditions |
 | `/admin` | Content management (requires login) |

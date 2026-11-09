@@ -11,15 +11,14 @@ const links = [
   { to: "/about", label: "About" },
   { to: "/classes", label: "Classes" },
   { to: "/timetable", label: "Timetable" },
-  { to: "/book", label: "Book" },
+  { to: "/book", label: "Booking" },
   { to: "/team", label: "Team" },
   { to: "/faq", label: "FAQ" },
-  { to: "/contact", label: "Contact" },
 ]
 
 const BOOK_CTA_TARGET = "/book"
 
-export function Logo({ compact = false }: { compact?: boolean }) {
+export function Logo({ compact = false, iconOnMobile = false }: { compact?: boolean; iconOnMobile?: boolean }) {
   return (
     <span className="flex items-center gap-3">
       <img
@@ -27,7 +26,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
         alt="Revival MMA"
         className="h-11 w-11 rounded-full object-cover ring-1 ring-gold/40"
       />
-      <span className="flex flex-col leading-none">
+      <span className={cn("flex flex-col leading-none", iconOnMobile && "hidden sm:flex")}>
         <span className="font-sans text-xl font-extrabold tracking-[0.14em] text-gold-dark dark:text-gold">
           REVIVAL
         </span>
@@ -69,7 +68,7 @@ export function Navbar() {
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
         <NavLink to="/" aria-label="Revival MMA — home">
-          <Logo />
+          <Logo iconOnMobile />
         </NavLink>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Main">
@@ -102,10 +101,10 @@ export function Navbar() {
             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
 
-          <Button asChild className="hidden sm:inline-flex">
+          <Button asChild className="px-3 sm:px-5">
             <NavLink to={BOOK_CTA_TARGET}>
               <CalendarDays className="h-4 w-4" />
-              Get Started
+              Book Trial
             </NavLink>
           </Button>
 
@@ -141,7 +140,7 @@ export function Navbar() {
                 <Button asChild size="lg" className="mt-auto">
                   <NavLink to={BOOK_CTA_TARGET}>
                     <CalendarDays className="h-4 w-4" />
-                    Get Started
+                    Book Trial
                   </NavLink>
                 </Button>
               </SheetClose>

@@ -33,8 +33,8 @@ export function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-lg border border-border bg-muted/40 p-6 text-center">
-        <p className="font-semibold">Thanks for reaching out! We'll be in touch soon.</p>
+      <div role="status" className="rounded-lg border border-border bg-muted/40 p-6 text-center">
+        <p className="font-semibold">Thanks for your trial request. We’ll be in touch to arrange your session.</p>
       </div>
     )
   }
@@ -56,16 +56,16 @@ export function ContactForm() {
         <Input id="phone" name="phone" type="tel" autoComplete="tel" />
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="message">Message</Label>
+        <Label htmlFor="message">Trial Details</Label>
         <Textarea
           id="message"
           name="message"
           required
-          placeholder="Tell us about your fitness goals and any questions you have..."
+          placeholder="Is the trial for you or your child? If it’s for a child, include their age. Let us know which classes or days suit you."
         />
       </div>
       <Button type="submit" size="lg" disabled={submitting}>
-        {submitting ? "Sending..." : "Send Message"}
+        {submitting ? "Sending..." : "Request Trial"}
       </Button>
     </form>
   )

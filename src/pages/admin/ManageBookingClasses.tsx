@@ -107,7 +107,7 @@ export function ManageBookingClasses() {
           <p className="text-sm text-muted-foreground">
             Set who each Gymdesk class is for and its group (e.g. "Adult MMA" and "MMA
             Fundamentals" both set to group "MMA" so they tab together on the booking widget). The
-            widget on <code className="text-xs">/book</code> only shows classes with an age range
+            widget is paused. When active, it only shows classes with an age range
             set here — new or renamed classes need to be classified before they'll appear to
             visitors.
           </p>

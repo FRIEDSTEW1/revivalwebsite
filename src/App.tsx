@@ -1,11 +1,10 @@
 import { Suspense, lazy } from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom"
 import { Layout } from "@/components/Layout"
 import { AdminLayout } from "@/pages/admin/AdminLayout"
 import { PageLoading } from "@/components/PageState"
 
 const Home = lazy(() => import("@/pages/Home").then((m) => ({ default: m.Home })))
-const Book = lazy(() => import("@/pages/Book").then((m) => ({ default: m.Book })))
 const About = lazy(() => import("@/pages/About").then((m) => ({ default: m.About })))
 const Classes = lazy(() => import("@/pages/Classes").then((m) => ({ default: m.Classes })))
 const Team = lazy(() => import("@/pages/Team").then((m) => ({ default: m.Team })))
@@ -50,11 +49,11 @@ export function App() {
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="classes" element={<Classes />} />
-            <Route path="book" element={<Book />} />
+            <Route path="book" element={<Contact />} />
             <Route path="team" element={<Team />} />
             <Route path="timetable" element={<Timetable />} />
             <Route path="faq" element={<FAQ />} />
-            <Route path="contact" element={<Contact />} />
+            <Route path="contact" element={<Navigate to="/book" replace />} />
             <Route path="newsletter" element={<Newsletter />} />
             <Route path="terms" element={<Terms />} />
 
