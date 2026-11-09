@@ -32,7 +32,7 @@ const features = [
 ]
 
 const stats = [
-  { value: "500+", label: "Active Members" },
+  { value: "Over 1,000", label: "Lives Changed" },
   { value: "5+", label: "Experienced Coaches" },
   { value: "15+", label: "Years Experience" },
   { value: "35+", label: "Classes Weekly" },
