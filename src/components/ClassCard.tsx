@@ -2,7 +2,7 @@ import { FramedImage } from "@/components/FramedImage"
 import { Check } from "lucide-react"
 import type { GymClass } from "@/lib/types"
 
-export function ClassCard({ gymClass }: { gymClass: GymClass }) {
+export function ClassCard({ gymClass, priority = false }: { gymClass: GymClass; priority?: boolean }) {
   return (
     <article className="card-lift group flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -11,7 +11,9 @@ export function ClassCard({ gymClass }: { gymClass: GymClass }) {
           framing={gymClass.image_framing}
           defaultY={50}
           alt={gymClass.name}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
+          sizes="(min-width: 1280px) 390px, (min-width: 1024px) 32vw, (min-width: 640px) 48vw, calc(100vw - 40px)"
           className="h-full w-full object-cover"
         />
         <span className="absolute right-3 top-3 rounded-full bg-gold px-3 py-1 text-xs font-bold text-gray-900 shadow-sm">

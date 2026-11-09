@@ -5,6 +5,9 @@ import path from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    'import.meta.env.VITE_NETLIFY_IMAGE_CDN': JSON.stringify(process.env.NETLIFY === 'true'),
+  },
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
