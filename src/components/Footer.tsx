@@ -4,7 +4,7 @@ import { Logo } from "@/components/Navbar"
 
 const quickLinks = [
   { to: "/classes", label: "Classes" },
-  { to: "/book", label: "Book a Class" },
+  { to: "/book", label: "Booking" },
   { to: "/timetable", label: "Timetable" },
   { to: "/team", label: "Team" },
   { to: "/faq", label: "FAQ" },

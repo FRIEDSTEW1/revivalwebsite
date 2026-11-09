@@ -34,9 +34,9 @@ export function FAQ() {
 
         <div className="mt-14 flex flex-col items-center gap-4 rounded-xl border border-gold/30 bg-gold/5 p-10 text-center">
           <h2 className="font-serif text-2xl font-bold">Still Have Questions?</h2>
-          <p className="text-sm text-muted-foreground">Contact us if you have any questions!</p>
+          <p className="text-sm text-muted-foreground">Our team can help you choose a class and arrange a trial.</p>
           <Button asChild size="lg">
-            <Link to="/contact">Contact Us</Link>
+            <Link to="/book">Book Trial</Link>
           </Button>
         </div>
       </div>

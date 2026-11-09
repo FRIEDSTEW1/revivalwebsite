@@ -34,18 +34,31 @@ export function Contact() {
   return (
     <>
       <SEO
-        title="Contact"
-        description="Get in touch with Revival MMA. Book your free trial session or ask us a question."
+        title="Booking"
+        path="/book"
+        description="Request a trial class at Revival MMA in Harrow. Our team will help you choose a class and arrange your first session."
       />
       <PageHeader
-        eyebrow="Get In Touch"
-        title="Book Your Free Trial"
-        subtitle="Tell us about your goals and we'll get you on the mats. Contact us if you have any questions!"
+        eyebrow="Booking"
+        title="Book a Trial"
+        subtitle="Tell us who the trial is for. We’ll be in touch to help you choose a class and confirm a time."
       />
 
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr]">
-          <div className="flex flex-col gap-8">
+          <Reveal
+            direction="right"
+            className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-10 lg:col-start-2 lg:row-start-1"
+          >
+            <h2 className="font-serif text-2xl font-bold">Request a Trial</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Share your details and any questions you have about getting started.
+            </p>
+            <div className="mt-8">
+              <ContactForm />
+            </div>
+          </Reveal>
+          <div className="flex flex-col gap-8 lg:col-start-1 lg:row-start-1">
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
               {details.map(({ icon: Icon, label, value, href }, i) => (
                 <Reveal
@@ -85,16 +98,6 @@ export function Contact() {
               />
             </div>
           </div>
-
-          <Reveal direction="right" className="rounded-xl border border-border bg-card p-8 shadow-sm sm:p-10">
-            <h2 className="font-serif text-2xl font-bold">Send Us a Message</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              We'll get back to you as soon as possible.
-            </p>
-            <div className="mt-8">
-              <ContactForm />
-            </div>
-          </Reveal>
         </div>
       </div>
     </>
